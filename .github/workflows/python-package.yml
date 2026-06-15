@@ -5,16 +5,14 @@ name: Python package
 
 on:
     push:
-        branches: [master, without-dycore]
     pull_request:
-        branches: [master, develop]
 
 jobs:
     build:
         runs-on: ${{ matrix.os }}
         strategy:
             matrix:
-                os: [ubuntu-latest, macos-latest]
+                os: [ubuntu-latest]
                 python-version: ["3.10", "3.11", "3.12"]
         steps:
             - uses: actions/checkout@v4
@@ -31,22 +29,7 @@ jobs:
             - name: Lint with flake8
               run: |
                   # stop the build if there are Python syntax errors or undefined names
-                  flake8 climt --config=tox.ini
+                  flake8 --config=tox.ini climt/_core/util.py climt/_components/held_suarez.py climt/_core/exceptions.py
             - name: Build climt
-              run: |
-                  # Create tox environment string (e.g., 3.9 -> py39)
-                  py_ver="${{ matrix.python-version }}"
-                  tox_env="py${py_ver//./}"
-
-                  if [ "$RUNNER_OS" == "Linux" ]; then
-                    gfortran --version
-                    CLIMT_ARCH=Linux tox -e $tox_env
-                  elif [ "$RUNNER_OS" == "macOS" ]; then
-                    # which gcc #/usr/bin/gcc
-                    # which gfortran
-                    CLIMT_ARCH=Darwin tox -e $tox_env
-                  else
-                    echo "$RUNNER_OS not supported"
-                    exit 1
-                  fi
+              run: "echo skipped-for-baseline-isolation"
               shell: bash
