@@ -1,4 +1,5 @@
 import functools
+import logging
 
 import numpy as np
 from sympl import DataArray  # pyright: ignore[reportMissingImports]
